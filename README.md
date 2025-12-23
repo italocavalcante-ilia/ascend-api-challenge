@@ -65,4 +65,10 @@ A Node.js project to show the essencial operations using AscendOS API with Ilia 
 5 - Markets
  - Stock Prices ( Check using an Symbol of a stock that you want to check the price , For example : AAPL)
 
-Obs: You need to get all credentials to use this API Project , credentials such as apikey , user , secret key and so on. 
+
+
+### IMPORTANT!
+You need to get all credentials to use this API Project , credentials such as apikey and serviceAccountCreds need to be set up on .env file (You need to create a new one based on .env.example). 
+
+Do you have questions to use this SDK ? Check the SDK Typescript Documentation with the link bellow :
+https://developer.apexclearing.com/apex-fintech-solutions/docs/sdk-typescript
