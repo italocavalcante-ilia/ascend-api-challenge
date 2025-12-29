@@ -14,6 +14,8 @@ import fastifyCookie from '@fastify/cookie'
 import { fundingsRoutes } from './routes/fundings'
 import { ledgerRoutes } from './routes/ledger'
 import { marketsRoutes } from './routes/markets'
+import { ZodError } from 'zod'
+import { ApexascendError } from '@apexfintechsolutions/ascend-sdk/src/models/errors/apexascenderror'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -22,6 +24,21 @@ app.setSerializerCompiler(serializerCompiler)
 
 app.addHook('preHandler', async (request: FastifyRequest) => {
   request.sdk = await initializeAscendOS()
+})
+
+app.setErrorHandler((error: ApexascendError, _, reply) => {
+  if (error instanceof ZodError) {
+    return reply
+      .status(400)
+      .send({ message: 'Validation error.', issues: error.format() })
+  }
+  console.log(error)
+  if (!error.httpMeta) {
+    return reply.status(500).send({ message: 'Unknown error occurred.' })
+  }
+  return reply
+    .status(error.httpMeta.response?.status)
+    .send({ message: error.message })
 })
 
 app.register(fastifyCookie)
@@ -54,5 +71,5 @@ app.register(transactionsRoutes, {
 })
 
 app.listen({ port: env.PORT }).then(() => {
-  console.log('Server is running on http://localhost:3337')
+  console.log(`Server is running on http://localhost:${env.PORT}`)
 })
